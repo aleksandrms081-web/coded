@@ -5,6 +5,7 @@
  */
 import type { NextFunction, Request, Response } from "express"
 import jwt from "jsonwebtoken"
+import type { SignOptions } from "jsonwebtoken"
 import { SiweMessage } from "siwe"
 import { randomBytes } from "node:crypto"
 import { config } from "./config.js"
@@ -34,7 +35,10 @@ export async function verifySiwe(message: string, signature: string, expectedNon
 
 /** Issue a session token for an authenticated address. */
 export function issueToken(address: string): string {
-  return jwt.sign({ sub: address }, config.jwt.secret, { expiresIn: config.jwt.ttl })
+  // Cast options so a string TTL like "7d" satisfies the stricter StringValue type
+  // shipped with newer @types/jsonwebtoken.
+  const options = { expiresIn: config.jwt.ttl } as SignOptions
+  return jwt.sign({ sub: address }, config.jwt.secret, options)
 }
 
 /** Express middleware that requires a valid bearer token. */
