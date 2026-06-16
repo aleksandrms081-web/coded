@@ -1,0 +1,273 @@
+/* ────────────────────────────────────
+ * Perk Wallet — visual polish layer
+ * Additive enhancements on top of global.css / app.css. Pure CSS,
+ * no markup changes required. Safe to remove without breaking layout.
+ * ──────────────────────────────────── */
+
+:root {
+  --glow-violet: rgba(124, 58, 237, 0.55);
+  --glow-cyan: rgba(34, 211, 238, 0.45);
+  --ring-easing: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Smooth scrolling + nicer text rendering */
+html {
+  scroll-behavior: smooth;
+}
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Branded text selection */
+::selection {
+  background: rgba(124, 58, 237, 0.4);
+  color: #fff;
+}
+
+/* Custom scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--violet-2) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--violet), var(--cyan));
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(var(--violet-2), var(--teal));
+  background-clip: content-box;
+}
+
+/* Accessible focus ring for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* A third, slowly counter-drifting aurora blob for extra depth */
+body::before {
+  animation-duration: 26s;
+}
+
+/* Glass cards: lift + animated gradient halo on hover */
+.glass {
+  position: relative;
+  transition:
+    transform 0.35s var(--ring-easing),
+    box-shadow 0.35s var(--ring-easing),
+    border-color 0.35s var(--ring-easing);
+}
+.glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    130deg,
+    var(--glow-violet),
+    transparent 35%,
+    transparent 65%,
+    var(--glow-cyan)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s var(--ring-easing);
+  pointer-events: none;
+}
+.glass:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 28px 80px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(124, 58, 237, 0.12);
+}
+.glass:hover::after {
+  opacity: 1;
+}
+
+/* Primary button: moving sheen + stronger lift */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  background-size: 180% 180%;
+  animation: grad-pan 8s ease infinite;
+}
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.45),
+    transparent
+  );
+  transform: skewX(-18deg);
+  transition: left 0.6s var(--ring-easing);
+}
+.btn-primary:hover::before {
+  left: 130%;
+}
+.btn-primary:hover {
+  box-shadow: 0 16px 44px var(--glow-violet);
+}
+.btn-primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+@keyframes grad-pan {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Gradient text gets a subtle living shimmer */
+.gradient-text {
+  background-size: 200% auto;
+  animation: grad-pan 10s ease infinite;
+}
+
+/* Badges glow softly */
+.badge {
+  backdrop-filter: blur(6px);
+  transition:
+    border-color 0.25s ease,
+    color 0.25s ease;
+}
+.badge:hover {
+  border-color: var(--cyan);
+  color: var(--ink);
+}
+
+/* Inputs animate their focus halo */
+.input,
+.textarea,
+.select {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+.input:hover,
+.textarea:hover,
+.select:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+/* Navbar brand mark subtle pulse on hover */
+.brand img,
+.brand svg {
+  transition:
+    transform 0.4s var(--ring-easing),
+    filter 0.4s ease;
+}
+.brand:hover img,
+.brand:hover svg {
+  transform: rotate(-6deg) scale(1.06);
+  filter: drop-shadow(0 0 10px var(--glow-violet));
+}
+
+/* Tabs slide their active pill smoothly */
+.tab {
+  transition:
+    color 0.2s ease,
+    background 0.25s var(--ring-easing),
+    transform 0.15s ease;
+}
+.tab:hover {
+  color: var(--ink);
+}
+.tab:active {
+  transform: scale(0.96);
+}
+
+/* Vault cards stagger-fade as they enter */
+.vault-card {
+  animation: fadeIn 0.5s ease both;
+}
+.vault-card:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.vault-card:nth-child(3) {
+  animation-delay: 0.12s;
+}
+.vault-card:nth-child(4) {
+  animation-delay: 0.18s;
+}
+.vault-card:nth-child(n + 5) {
+  animation-delay: 0.24s;
+}
+
+/* Countdown ring gently breathes while locked */
+.ring:not(.unlocked) {
+  animation: ring-breathe 3.2s ease-in-out infinite;
+}
+@keyframes ring-breathe {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.35));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(124, 58, 237, 0.6));
+  }
+}
+
+/* Hero image floats subtly */
+.hero-img {
+  animation: float 7s ease-in-out infinite;
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Feature tiles raise on hover */
+.feature {
+  transition:
+    transform 0.3s var(--ring-easing),
+    background 0.3s ease;
+}
+.feature:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
