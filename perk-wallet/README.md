@@ -120,15 +120,3 @@ PRs are welcome! Read [CONTRIBUTING.md](CONTRIBUTING.md) and our [Code of Conduc
 ## License
 
 [MIT](LICENSE) © Perk Wallet contributors. Inspired by the excellent [drand/timevault](https://github.com/drand/timevault); PerkLock is an independent implementation.
-
----
-
-<p align="center">
-  <sub><b>𝗖𝗼𝗱𝗲𝗱 𝘄𝗶𝘁𝗵 💙 𝗯𝘆 𝗬𝗮𝘀𝗶𝗩</b></sub>
-</p>
-
-<p align="center">
-  <a href="https://t.me/YasiV"><img src="https://img.shields.io/badge/Telegram-%40YasiV-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram @YasiV" /></a>
-  &nbsp;
-  <a href="mailto:yasinrz@yandex.com"><img src="https://img.shields.io/badge/Email-yasinrz%40yandex.com-FC3F1D?style=for-the-badge&logo=maildotru&logoColor=white" alt="Email yasinrz@yandex.com" /></a>
-</p>
