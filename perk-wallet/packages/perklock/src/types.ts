@@ -8,7 +8,7 @@ export interface PerkLockOptions {
 }
 
 /** What a vault payload represents — purely informational metadata. */
-export type VaultKind = "key" | "mnemonic" | "address" | "message"
+export type VaultKind = "key" | "mnemonic" | "address" | "keystore" | "message"
 
 export interface LockParams {
   /** The secret to time-lock. Strings are UTF-8 encoded; bytes are used as-is. */
