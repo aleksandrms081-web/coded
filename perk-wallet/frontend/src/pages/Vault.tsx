@@ -58,11 +58,11 @@ export function Vault() {
         kind: kind as VaultRecord["kind"],
       })
       const record = await api.createVault({
-        label: vault.label,
+        label: vault.meta.label,
         ciphertext: vault.ciphertext,
         unlockRound: vault.unlockRound,
-        unlockAt: vault.unlockAt,
-        kind: vault.kind,
+        unlockAt: vault.meta.unlockAt,
+        kind: vault.meta.kind,
         shareable,
       })
       setOk(`Locked “${record.label}” until ${unlockAt.toLocaleString()}.`)
