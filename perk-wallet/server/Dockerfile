@@ -2,8 +2,9 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
-# native build tools for modules like better-sqlite3
-RUN apk add --no-cache python3 make g++
+# better-sqlite3 ships prebuilt linux-x64-musl binaries via prebuild-install,
+# so no apk toolchain needed. (If a future native dep needs compilation, add:
+#   RUN apk add --no-cache python3 make g++)
 
 # install workspace deps (cached layer)
 COPY package.json package-lock.json* ./
