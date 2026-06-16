@@ -41,6 +41,8 @@ if (!jwtSecret) {
   console.warn("[config] JWT_SECRET not set — using an insecure development secret.")
 }
 
+const defaultOrigin = "https://" + parsed.SIWE_DOMAIN
+
 export const config = {
   env: parsed.NODE_ENV,
   isProd,
@@ -52,7 +54,7 @@ export const config = {
   },
   siwe: {
     domain: parsed.SIWE_DOMAIN,
-    origin: parsed.SIWE_ORIGIN ?? `https://${parsed.SIWE_DOMAIN}`,
+    origin: parsed.SIWE_ORIGIN ?? defaultOrigin,
   },
   corsOrigins: parsed.CORS_ORIGINS.split(",").map((s) => s.trim()).filter(Boolean),
   rateLimit: {
