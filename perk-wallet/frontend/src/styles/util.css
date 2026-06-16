@@ -1,0 +1,15 @@
+/* Small utility classes so components avoid inline style objects. */
+.mt-xs { margin-top: 0.4rem; }
+.mt-sm { margin-top: 0.6rem; }
+.mt-md { margin-top: 1rem; }
+.mt-lg { margin-top: 1.5rem; }
+.mb-md { margin-bottom: 1rem; }
+.m-0 { margin: 0; }
+.between { justify-content: space-between; }
+.narrow { width: min(680px, 94vw); margin: 0 auto; }
+.ok-text { color: var(--teal); }
+.warn-text { color: var(--pink); }
+.full { width: 100%; }
+.center { text-align: center; }
+.wrap-anywhere { overflow-wrap: anywhere; }
+.gap-sm { gap: 0.5rem; }
