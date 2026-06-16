@@ -1,0 +1,28 @@
+# Caddy reverse proxy for Perk Wallet.
+# Routes /api/* to the Express API and everything else to the static frontend.
+# Automatic HTTPS via Let's Encrypt for {$PUBLIC_DOMAIN}.
+{$PUBLIC_DOMAIN} {
+	tls {$LETSENCRYPT_EMAIL}
+
+	encode gzip zstd
+
+	# Security headers
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+
+	# API
+	handle /api/* {
+		reverse_proxy api:8080
+	}
+
+	# Frontend (SPA)
+	handle {
+		reverse_proxy web:80
+	}
+}
