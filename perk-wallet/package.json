@@ -1,0 +1,31 @@
+{
+  "name": "perk-wallet",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Open-source web3 crypto wallet platform with PerkLock time-locked asset vaults.",
+  "license": "MIT",
+  "workspaces": [
+    "packages/perklock",
+    "server",
+    "frontend"
+  ],
+  "scripts": {
+    "build:perklock": "npm run build --workspace packages/perklock",
+    "dev": "npm run build:perklock && concurrently -n api,web -c cyan,magenta \"npm run dev --workspace server\" \"npm run dev --workspace frontend\"",
+    "dev:api": "npm run dev --workspace server",
+    "dev:web": "npm run dev --workspace frontend",
+    "build": "npm run build:perklock && npm run build --workspace server && npm run build --workspace frontend",
+    "start": "npm run start --workspace server",
+    "lint": "prettier --check . && tsc -b --noEmit",
+    "format": "prettier --write .",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
