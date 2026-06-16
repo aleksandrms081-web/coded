@@ -32,8 +32,12 @@ services:
       - "80"
 
   # Caddy terminates TLS and auto-issues Let's Encrypt certs for PUBLIC_DOMAIN.
+  # Built from a custom Dockerfile that bundles the Cloudflare DNS plugin so
+  # DNS-01 challenges work even when inbound 80/443 are blocked upstream.
   caddy:
-    image: caddy:2-alpine
+    build:
+      context: .
+      dockerfile: deploy/caddy.Dockerfile
     depends_on:
       - web
       - api
@@ -43,6 +47,7 @@ services:
     environment:
       - PUBLIC_DOMAIN=${PUBLIC_DOMAIN}
       - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
     volumes:
       - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
