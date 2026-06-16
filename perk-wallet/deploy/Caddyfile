@@ -1,8 +1,15 @@
 # Caddy reverse proxy for Perk Wallet.
 # Routes /api/* to the Express API and everything else to the static frontend.
-# Automatic HTTPS via Let's Encrypt for {$PUBLIC_DOMAIN}.
+# Automatic HTTPS via Let's Encrypt for {$PUBLIC_DOMAIN} using the Cloudflare
+# DNS-01 challenge — no inbound 80/443 required for cert issuance.
+{
+	email {$LETSENCRYPT_EMAIL}
+}
+
 {$PUBLIC_DOMAIN} {
-	tls {$LETSENCRYPT_EMAIL}
+	tls {
+		dns cloudflare {$CLOUDFLARE_API_TOKEN}
+	}
 
 	encode gzip zstd
 
