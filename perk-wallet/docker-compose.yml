@@ -1,0 +1,55 @@
+# Perk Wallet — full platform stack (frontend + API + HTTPS reverse proxy).
+# Bring everything up with:  docker compose up -d --build
+services:
+  api:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    environment:
+      - PORT=8080
+      - DATA_DIR=/data
+      - JWT_SECRET=${JWT_SECRET}
+      - SIWE_DOMAIN=${SIWE_DOMAIN}
+      - CORS_ORIGINS=${CORS_ORIGINS}
+      - PERKLOCK_DRAND_NETWORK=${PERKLOCK_DRAND_NETWORK:-mainnet}
+    volumes:
+      - perk-data:/data
+    restart: unless-stopped
+    expose:
+      - "8080"
+
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+        - VITE_DEFAULT_CHAIN_ID=${VITE_DEFAULT_CHAIN_ID:-1}
+        - VITE_RPC_URL=${VITE_RPC_URL}
+        - VITE_APP_NAME=${VITE_APP_NAME:-Perk Wallet}
+    restart: unless-stopped
+    expose:
+      - "80"
+
+  # Caddy terminates TLS and auto-issues Let's Encrypt certs for PUBLIC_DOMAIN.
+  caddy:
+    image: caddy:2-alpine
+    depends_on:
+      - web
+      - api
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    restart: unless-stopped
+
+volumes:
+  perk-data:
+  caddy-data:
+  caddy-config:
