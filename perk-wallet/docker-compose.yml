@@ -1,5 +1,14 @@
-# Perk Wallet — full platform stack (frontend + API + HTTPS reverse proxy).
+# Perk Wallet — full platform stack (frontend + API + Cloudflare Tunnel).
 # Bring everything up with:  docker compose up -d --build
+#
+# Architecture:
+#   user → Cloudflare edge (HTTPS, free cert)
+#        → cloudflared (outbound-only tunnel from this VPS)
+#        → web (nginx, SPA + /api proxy) → api (Express)
+#
+# No inbound ports needed on the host. nginx in `web` proxies /api/* to `api`,
+# so Cloudflare Tunnel only needs a single public hostname pointing to
+# http://web:80.
 services:
   api:
     build:
@@ -27,34 +36,21 @@ services:
         - VITE_DEFAULT_CHAIN_ID=${VITE_DEFAULT_CHAIN_ID:-1}
         - VITE_RPC_URL=${VITE_RPC_URL}
         - VITE_APP_NAME=${VITE_APP_NAME:-Perk Wallet}
+    depends_on:
+      - api
     restart: unless-stopped
     expose:
       - "80"
 
-  # Caddy terminates TLS and auto-issues Let's Encrypt certs for PUBLIC_DOMAIN.
-  # Built from a custom Dockerfile that bundles the Cloudflare DNS plugin so
-  # DNS-01 challenges work even when inbound 80/443 are blocked upstream.
-  caddy:
-    build:
-      context: .
-      dockerfile: deploy/caddy.Dockerfile
+  # Cloudflare Tunnel — outbound-only connection from the VPS to Cloudflare's
+  # edge. Routing is configured in the Cloudflare dashboard under the tunnel's
+  # "Public Hostnames" tab: point lesmes.bitmax.eu.cc → http://web:80.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
     depends_on:
       - web
-      - api
-    ports:
-      - "80:80"
-      - "443:443"
-    environment:
-      - PUBLIC_DOMAIN=${PUBLIC_DOMAIN}
-      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
-      - CLOUDFLARE_API_TOKEN=${CLOUDFLARE_API_TOKEN}
-    volumes:
-      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy-data:/data
-      - caddy-config:/config
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TUNNEL_TOKEN}
     restart: unless-stopped
 
 volumes:
   perk-data:
-  caddy-data:
-  caddy-config:
